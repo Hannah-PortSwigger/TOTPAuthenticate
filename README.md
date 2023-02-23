@@ -130,7 +130,7 @@ If using the following configuration, please make sure that an instance of Burp 
 }
 ```
 
-### Using Gradle
+## Using Gradle
 - If you do not have Gradle already installed, follow the installation instructions [here](https://gradle.org/install/).
 - Once Gradle is installed, run `gradle fatJar` from the installation directory using the command line.
 - Make sure you are using the latest version of Gradle.
