@@ -1,3 +1,6 @@
+package burp;
+
+import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.http.message.HttpHeader;
 import burp.api.montoya.http.message.params.HttpParameterType;
 import burp.api.montoya.http.message.params.ParsedHttpParameter;
@@ -6,6 +9,8 @@ import burp.api.montoya.http.sessions.ActionResult;
 import burp.api.montoya.http.sessions.SessionHandlingAction;
 import burp.api.montoya.http.sessions.SessionHandlingActionData;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
+import utils.ConfigurationParser;
+import utils.RuleType;
 
 import static burp.api.montoya.http.message.HttpHeader.httpHeader;
 import static burp.api.montoya.http.message.params.HttpParameter.parameter;
@@ -13,17 +18,15 @@ import static burp.api.montoya.http.sessions.ActionResult.actionResult;
 
 public class MySessionHandlingAction implements SessionHandlingAction
 {
-    private final String secret;
-    private final RuleType ruleType;
-    private final String parameterName;
+    private String secret;
+    private RuleType ruleType;
+    private String parameterName;
     private final GoogleAuthenticator gAuth;
+    private final MontoyaApi api;
 
-    public MySessionHandlingAction(String secret, RuleType ruleType, String parameterName)
+    public MySessionHandlingAction(MontoyaApi api)
     {
-        this.secret = secret;
-        this.ruleType = ruleType;
-        this.parameterName = parameterName;
-
+        this.api = api;
         gAuth = new GoogleAuthenticator();
     }
 
@@ -36,6 +39,16 @@ public class MySessionHandlingAction implements SessionHandlingAction
     @Override
     public ActionResult performAction(SessionHandlingActionData actionData)
     {
+        if (secret == null)
+        {
+            String input = api.burpSuite().exportProjectOptionsAsJson("project_options.sessions");
+            ConfigurationParser configParser = new ConfigurationParser(api, input);
+
+            secret = configParser.getSecret();
+            ruleType = configParser.getRuleType();
+            parameterName = configParser.getParameterName();
+        }
+
         HttpRequest request = actionData.request();
 
         HttpRequest newRequest = switch (ruleType)

@@ -1,3 +1,5 @@
+package utils;
+
 public enum RuleType
 {
     HEADER,
