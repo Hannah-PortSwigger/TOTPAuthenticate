@@ -10,7 +10,7 @@ public class ConfigurationParser
     String secret;
     RuleType ruleType;
     String parameterName;
-    private MontoyaApi api;
+    private final MontoyaApi api;
 
     public ConfigurationParser(MontoyaApi api, String input)
     {
@@ -68,34 +68,47 @@ public class ConfigurationParser
 
         for (String s : partsInput)
         {
-            String[] partsVariable = s.split("=");
+            String[] partsVariable = s.split(":");
 
             switch (partsVariable[0].toUpperCase())
             {
-                case "SECRETKEY":
+                case "SECRETKEY" ->
+                {
                     Base32 base32 = new Base32();
                     byte[] secretKeyDecoded = base32.decode(partsVariable[1]);
-
                     secret = Arrays.toString(secretKeyDecoded);
-                    break;
-
-                case "RULETYPE":
+                }
+                case "RULETYPE" ->
+                {
                     String ruleTypeStr = partsVariable[1].toUpperCase();
-
                     ruleType = switch (ruleTypeStr)
+                            {
+                                case "HEADER" -> RuleType.HEADER;
+                                case "URL" -> RuleType.URL;
+                                case "COOKIE" -> RuleType.COOKIE;
+                                case "BODY_PARAM" -> RuleType.BODY_PARAM;
+                                case "BODY_REGEX" -> RuleType.BODY_REGEX;
+                                default -> RuleType.HEADER;
+                            };
+                }
+                case "PARAMETERNAME" ->
+                {
+                    try
                     {
-                        case "HEADER" -> RuleType.HEADER;
-                        case "URL" -> RuleType.URL;
-                        case "COOKIE" -> RuleType.COOKIE;
-                        case "BODY" -> RuleType.BODY;
-                        default -> RuleType.HEADER;
-                    };
+                        if (ruleType == RuleType.BODY_REGEX)
+                            parameterName = api.utilities().base64Utils().decode(partsVariable[1]).toString();
+                        else
+                            parameterName = partsVariable[1];
 
-                case "PARAMETERNAME":
-                    parameterName = partsVariable[1];
-                    break;
-                default:
-                    break;
+                    } catch (Exception e)
+                    {
+                        api.logging().logToOutput(partsVariable[0]);
+                        api.logging().logToError("Failed to BASE64 decode " + partsVariable[1]);
+                    }
+                }
+                default ->
+                {
+                }
             }
         }
 

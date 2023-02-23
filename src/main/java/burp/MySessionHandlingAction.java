@@ -12,6 +12,9 @@ import com.warrenstrange.googleauth.GoogleAuthenticator;
 import utils.ConfigurationParser;
 import utils.RuleType;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static burp.api.montoya.http.message.HttpHeader.httpHeader;
 import static burp.api.montoya.http.message.params.HttpParameter.parameter;
 import static burp.api.montoya.http.sessions.ActionResult.actionResult;
@@ -59,8 +62,9 @@ public class MySessionHandlingAction implements SessionHandlingAction
                             updateOrAddTokenInParameter(request, HttpParameterType.URL);
                     case COOKIE ->
                             updateOrAddTokenInParameter(request, HttpParameterType.COOKIE);
-                    case BODY ->
+                    case BODY_PARAM ->
                             updateOrAddTokenInParameter(request, HttpParameterType.BODY);
+                    case BODY_REGEX -> updateTokenInBody(request);
                 };
 
         return actionResult(newRequest);
@@ -75,6 +79,24 @@ public class MySessionHandlingAction implements SessionHandlingAction
     {
         return isParameterNamePresentInParameters(request, parameterType) ? request.withUpdatedParameters(parameter(parameterName, String.valueOf(gAuth.getTotpPassword(secret)), parameterType)) : request.withAddedParameters(parameter(parameterName, String.valueOf(gAuth.getTotpPassword(secret)), parameterType));
     }
+
+    private HttpRequest updateTokenInBody(HttpRequest request)
+    {
+        String body = request.bodyToString();
+
+        Pattern pattern = Pattern.compile(parameterName);
+        Matcher matcher = pattern.matcher(body);
+
+        if(matcher.find())
+        {
+            int start = matcher.start(1);
+            int end = matcher.end(1);
+            return request.withBody(new StringBuilder(body).replace(start, end, String.valueOf(gAuth.getTotpPassword(secret))).toString());
+        }
+
+        return request;
+    }
+
 
     private boolean isParameterNamePresentInHeaders(HttpRequest request)
     {
