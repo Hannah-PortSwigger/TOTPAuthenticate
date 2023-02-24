@@ -27,6 +27,8 @@ Please note that extensions are written by third party users of Burp, and PortSw
 9. Perform any testing in Burp Suite Professional/Community
 10. Export the session handling rule by going to `Session handling rules > Cog button > Save settings`
 
+![til](./documentation/TOTPExtensionExample.gif)
+
 #### Limitations
 - Only the first rule present will be applied
 - Any rule changes will require extension reloads when testing in Burp Suite Professional or Community Edition
