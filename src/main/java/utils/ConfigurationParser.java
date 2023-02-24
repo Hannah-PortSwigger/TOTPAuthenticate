@@ -4,13 +4,16 @@ import burp.api.montoya.MontoyaApi;
 import org.apache.commons.codec.binary.Base32;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class ConfigurationParser
-{
-    String secret;
-    RuleType ruleType;
-    String parameterName;
+public class ConfigurationParser {
+    private String secret;
+    private RuleType ruleType;
+    private String parameterName;
+
     private final MontoyaApi api;
+    private Pattern replacmentPattern;
 
     public ConfigurationParser(MontoyaApi api, String input)
     {
@@ -47,6 +50,11 @@ public class ConfigurationParser
     public String getParameterName()
     {
         return parameterName;
+    }
+
+    public Pattern getReplacmentPattern()
+    {
+        return replacmentPattern;
     }
 
     private void parse(String input)
@@ -96,11 +104,20 @@ public class ConfigurationParser
                     try
                     {
                         if (ruleType == RuleType.BODY_REGEX)
-                            parameterName = api.utilities().base64Utils().decode(partsVariable[1]).toString();
+                        {
+                            replacmentPattern = Pattern.compile(api.utilities().base64Utils().decode(partsVariable[1]).toString());
+                            Matcher matcher = replacmentPattern.matcher("");
+                            if(matcher.groupCount() != 1) {
+                                api.logging().logToError("Regex must define exactly one group to insert token into!");
+                            }
+                        }
                         else
+                        {
                             parameterName = partsVariable[1];
+                        }
 
-                    } catch (Exception e)
+                    }
+                    catch (Exception e)
                     {
                         api.logging().logToOutput(partsVariable[0]);
                         api.logging().logToError("Failed to BASE64 decode " + partsVariable[1]);
@@ -127,6 +144,19 @@ public class ConfigurationParser
             api.logging().logToError("ParameterName is null based on configuration of " + configurationString);
         }
 
+        if (ruleType == RuleType.BODY_REGEX && replacmentPattern == null)
+        {
+            api.logging().logToError("ParameterName is null based on configuration of " + configurationString);
+        }
 
+        if(ruleType == RuleType.BODY_REGEX)
+        {
+            api.logging().logToOutput(String.format("TOTP Authenticate configured to use regex: %s", replacmentPattern.pattern()));
+        }
+        else
+        {
+            api.logging().logToOutput(String.format("TOTP Authenticate configured to use parameter: %s with name: %s", ruleType, parameterName));
+        }
     }
+
 }

@@ -58,9 +58,9 @@ Please note that extensions are written by third party users of Burp, and PortSw
 ## Examples
 
 ### Example for a BODY_REGEX regular expression
-The following example supplies the regex of `.*\"AdditionalAuthData\":\"(\\d*)\".*` as its `parameterName` to identify the match expression and replace `(\d*)` with the generated OTP rolling code
+The following example supplies the regex of `.*\"AdditionalAuthData\":\"(\d*)\".*` as its `parameterName` to identify the match expression and replace `(\d*)` with the generated OTP rolling code
 ```
-/^^secretKey:EQZWG4RTORIDIJBE,ruleType:BODY_REGEX,parameterName:LipcIkFkZGl0aW9uYWxBdXRoRGF0YVwiOlwiKFxcZCopXCIuKg==^^/
+/^^secretKey:EQZWG4RTORIDIJBE,ruleType:BODY_REGEX,parameterName:LipcIkFkZGl0aW9uYWxBdXRoRGF0YVwiOlwiKFxkKilcIi4q^^/
 ```
 
 ### Example for a HEADER regular expression

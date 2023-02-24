@@ -24,6 +24,8 @@ public class MySessionHandlingAction implements SessionHandlingAction
     private String secret;
     private RuleType ruleType;
     private String parameterName;
+    private Pattern replacementPattern;
+
     private final GoogleAuthenticator gAuth;
     private final MontoyaApi api;
 
@@ -50,6 +52,7 @@ public class MySessionHandlingAction implements SessionHandlingAction
             secret = configParser.getSecret();
             ruleType = configParser.getRuleType();
             parameterName = configParser.getParameterName();
+            replacementPattern = configParser.getReplacmentPattern();
         }
 
         HttpRequest request = actionData.request();
@@ -83,9 +86,7 @@ public class MySessionHandlingAction implements SessionHandlingAction
     private HttpRequest updateTokenInBody(HttpRequest request)
     {
         String body = request.bodyToString();
-
-        Pattern pattern = Pattern.compile(parameterName);
-        Matcher matcher = pattern.matcher(body);
+        Matcher matcher = replacementPattern.matcher(body);
 
         if(matcher.find())
         {
