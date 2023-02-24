@@ -1,9 +1,7 @@
 package utils;
 
 import burp.api.montoya.MontoyaApi;
-import org.apache.commons.codec.binary.Base32;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,9 +80,7 @@ public class ConfigurationParser {
             {
                 case "SECRETKEY" ->
                 {
-                    Base32 base32 = new Base32();
-                    byte[] secretKeyDecoded = base32.decode(partsVariable[1]);
-                    secret = Arrays.toString(secretKeyDecoded);
+                    secret = partsVariable[1];
                 }
                 case "RULETYPE" ->
                 {
@@ -105,7 +101,7 @@ public class ConfigurationParser {
                     {
                         if (ruleType == RuleType.BODY_REGEX)
                         {
-                            replacmentPattern = Pattern.compile(api.utilities().base64Utils().decode(partsVariable[1]).toString());
+                            replacmentPattern = Pattern.compile(api.utilities().base64Utils().decode(partsVariable[1]).toString(), Pattern.DOTALL | Pattern.MULTILINE);
                             Matcher matcher = replacmentPattern.matcher("");
                             if(matcher.groupCount() != 1) {
                                 api.logging().logToError("Regex must define exactly one group to insert token into!");
