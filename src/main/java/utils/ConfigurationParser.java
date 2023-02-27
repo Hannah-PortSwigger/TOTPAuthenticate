@@ -5,6 +5,8 @@ import burp.api.montoya.MontoyaApi;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static burp.TOTPAuthenticate.EXTENSION_NAME;
+
 public class ConfigurationParser {
     private String secret;
     private RuleType ruleType;
@@ -147,11 +149,11 @@ public class ConfigurationParser {
 
         if(ruleType == RuleType.BODY_REGEX)
         {
-            api.logging().logToOutput(String.format("TOTP Authenticate configured to use regex: %s", replacmentPattern.pattern()));
+            api.logging().logToOutput(String.format("%s configured to use regex: %s", EXTENSION_NAME, replacmentPattern.pattern()));
         }
         else
         {
-            api.logging().logToOutput(String.format("TOTP Authenticate configured to use parameter: %s with name: %s", ruleType, parameterName));
+            api.logging().logToOutput(String.format("%s configured to use parameter: %s with name: %s", EXTENSION_NAME, ruleType, parameterName));
         }
     }
 
