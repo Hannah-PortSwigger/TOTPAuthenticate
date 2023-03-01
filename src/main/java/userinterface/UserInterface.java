@@ -20,29 +20,17 @@ public class UserInterface
         panel = new JPanel(layout);
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         panel.add(new QRParserPanel(), gbc);
 
         gbc = new GridBagConstraints();
-        gbc.gridx = 0;
         gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         panel.add(new ParamInputPanel(), gbc);
 
         gbc = new GridBagConstraints();
-        gbc.gridx = 0;
         gbc.gridy = 2;
-        gbc.gridwidth = 1;
-        gbc.weighty = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         panel.add(new ConfigDisplayPanel(), gbc);
     }
@@ -56,32 +44,17 @@ public class UserInterface
     {
         QRParserPanel()
         {
-            super(new GridBagLayout());
+            super(new FlowLayout());
             initComponents();
         }
 
         private void initComponents()
         {
             JButton importQr = new JButton("Import QR");
+            this.add(importQr);
+
             JLabel qrCodeUrl = new JLabel("otpauth://totp/");
-
-            GridBagConstraints gbc;
-
-            gbc = new GridBagConstraints();
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.gridwidth = 5;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-
-            this.add(importQr, gbc);
-
-            gbc = new GridBagConstraints();
-            gbc.gridx = 5;
-            gbc.gridy = 0;
-            gbc.weightx = 1.0;
-            gbc.anchor = GridBagConstraints.WEST;
-            this.add(qrCodeUrl, gbc);
-
+            this.add(qrCodeUrl);
 
             importQr.addActionListener(e -> {
                 JFileChooser jFileChooser = new JFileChooser();
@@ -102,41 +75,20 @@ public class UserInterface
     private static class ParamInputPanel extends JPanel {
         ParamInputPanel()
         {
-            super(new GridBagLayout());
+            super(new FlowLayout());
             initComponents();
         }
 
         private void initComponents()
         {
-            GridBagConstraints gbc;
-
             JComboBox<RuleType> ruleTypeComboBox = new JComboBox<>(RuleType.values());
-            gbc = new GridBagConstraints();
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.gridwidth = 3;
-            gbc.gridheight = 2;
-            gbc.anchor = GridBagConstraints.WEST;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            this.add(ruleTypeComboBox, gbc);
+            this.add(ruleTypeComboBox);
 
-            JLabel paramLabel = new JLabel("Param Name");
-            gbc = new GridBagConstraints();
-            gbc.gridx = 3;
-            gbc.gridy = 0;
-            gbc.gridheight = 2;
-            gbc.anchor = GridBagConstraints.WEST;
-            this.add(paramLabel, gbc);
+            JLabel paramLabel = new JLabel("Param Name:");
+            this.add(paramLabel);
 
             JTextField paramField = new JTextField("Param name");
-            gbc = new GridBagConstraints();
-            gbc.gridx = 5;
-            gbc.gridy = 0;
-            gbc.gridheight = 2;
-            gbc.weightx = 1.0;
-            gbc.anchor = GridBagConstraints.WEST;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            this.add(paramField, gbc);
+            this.add(paramField);
 
             ruleTypeComboBox.addItemListener(e -> {
                 if(e.getItem() == RuleType.BODY_REGEX)
@@ -155,30 +107,17 @@ public class UserInterface
     {
         ConfigDisplayPanel()
         {
-            super(new GridBagLayout());
+            super(new FlowLayout());
             initComponents();
         }
 
         private void initComponents()
         {
-            GridBagConstraints gbc;
-
             JLabel configLabel = new JLabel("Session handling rule config description:");
-            gbc = new GridBagConstraints();
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.gridwidth = 5;
-            gbc.anchor = GridBagConstraints.WEST;
-            this.add(configLabel, gbc);
+            this.add(configLabel);
 
             JTextField configField = new JTextField("/^^secretKey:,ruleType:BODY_REGEX,parameterName:^^/");
-            gbc = new GridBagConstraints();
-            gbc.gridx = 5;
-            gbc.gridy = 0;
-            gbc.weightx = 1.0;
-            gbc.anchor = GridBagConstraints.WEST;
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            this.add(configField, gbc);
+            this.add(configField);
         }
     }
 }
