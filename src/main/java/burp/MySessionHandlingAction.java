@@ -15,6 +15,7 @@ import utils.RuleType;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static burp.TOTPAuthenticate.EXTENSION_NAME;
 import static burp.api.montoya.http.message.HttpHeader.httpHeader;
 import static burp.api.montoya.http.message.params.HttpParameter.parameter;
 import static burp.api.montoya.http.sessions.ActionResult.actionResult;
@@ -38,7 +39,7 @@ public class MySessionHandlingAction implements SessionHandlingAction
     @Override
     public String name()
     {
-        return "TOTP Authenticate";
+        return EXTENSION_NAME;
     }
 
     @Override
