@@ -29,9 +29,10 @@ Please note that extensions are written by third party users of Burp, and PortSw
 
 ![til](./documentation/TOTPExtensionExample.gif)
 
-#### Limitations
+### Limitations
 - Only the first rule present will be applied
 - Any rule changes will require extension reloads when testing in Burp Suite Professional or Community Edition
+- Due to the frequency of logins by Burp Scanner, OTPs can end up getting reused, which can result in failing logins. To avoid this, you may need to use "Incy Wincy" mode or add a delay to your recorded login sequence. Please note that adding a delay to a recorded login sequence will heavily impact scan times.
 
 ## Session handling rule format
 
